@@ -1,10 +1,14 @@
 pipeline {
     agent any
     environment {
-        //be sure to replace "bhavukm" with your own Docker Hub username
-        DOCKER_IMAGE_NAME = "bhavukm/train-schedule"
+        DOCKER_IMAGE_NAME = "luswala/train-schedule"
     }
     stages {
+        stage("Clone GIt"){
+            steps{
+            git url: 'https://github.com/soyeb-luswala/cicd-pipeline-train-schedule-autodeploy'
+            }
+        }
         stage('Build') {
             steps {
                 echo 'Running build automation'
@@ -13,20 +17,17 @@ pipeline {
             }
         }
         stage('Build Docker Image') {
-            when {
-                branch 'master'
-            }
             steps {
                 script {
                     app = docker.build(DOCKER_IMAGE_NAME)
-                    app.inside {
+                                        app.inside {
                         sh 'echo Hello, World!'
                     }
                 }
             }
         }
         stage('Push Docker Image') {
-            when {
+                        when {
                 branch 'master'
             }
             steps {
@@ -38,41 +39,41 @@ pipeline {
                 }
             }
         }
-        stage('CanaryDeploy') {
-            when {
-                branch 'master'
-            }
-            environment { 
-                CANARY_REPLICAS = 1
-            }
-            steps {
-                kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig',
-                    configs: 'train-schedule-kube-canary.yml',
-                    enableConfigSubstitution: true
-                )
-            }
-        }
+        // stage('CanaryDeploy') {
+        //     when {
+        //         branch 'master'
+        //     }
+        //     environment { 
+        //         CANARY_REPLICAS = 1
+        //     }
+        //     steps {
+        //         kubernetesDeploy(
+        //             kubeconfigId: 'kubeconfig',
+        //             configs: 'train-schedule-kube-canary.yml',
+        //             enableConfigSubstitution: true
+        //         )
+        //     }
+        // }        
         stage('DeployToProduction') {
-            when {
+                        when {
                 branch 'master'
             }
-            environment { 
-                CANARY_REPLICAS = 0
-            }
+            // environment { 
+            //     CANARY_REPLICAS = 0
+            // }            
             steps {
-                input 'Deploy to Production?'
-                milestone(1)
-                kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig',
-                    configs: 'train-schedule-kube-canary.yml',
-                    enableConfigSubstitution: true
-                )
-                kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig',
-                    configs: 'train-schedule-kube.yml',
-                    enableConfigSubstitution: true
-                )
+
+                 sh "kubectl --kubeconfig=/home/devops_user/mykubeconfig/config get pods"
+                 sh 'kubectl --kubeconfig=/home/devops_user/mykubeconfig apply -f deployment.yaml'
+                 sh 'kubectl --kubeconfig=/home/devops_user/mykubeconfig apply -f app-service.yaml'
+                 
+                 sh "kubectl --kubeconfig=/home/devops_user/mykubeconfig/config get deployments"
+                 sh "kubectl --kubeconfig=/home/devops_user/mykubeconfig/config get svc"
+                 sh "kubectl --kubeconfig=/home/devops_user/mykubeconfig/config get pods"
+
+
+
+}
             }
         }
     }
