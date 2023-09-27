@@ -12,7 +12,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Running build automation'
-                sh './gradlew build --no-daemon -Dorg.gradle.java.home=/usr/lib/jvm/java-11-openjdk-amd64'
+                sh './gradlew build --no-daemon'
                 archiveArtifacts artifacts: 'dist/trainSchedule.zip'
             }
         }
