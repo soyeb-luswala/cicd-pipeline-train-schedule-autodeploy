@@ -70,11 +70,10 @@ pipeline {
                  sh "kubectl --kubeconfig=/home/devops_user/mykubeconfig/config get deployments"
                  sh "kubectl --kubeconfig=/home/devops_user/mykubeconfig/config get svc"
                  sh "kubectl --kubeconfig=/home/devops_user/mykubeconfig/config get pods"
-
-
-
-}
             }
+
+
+            
         }
     }
 }
