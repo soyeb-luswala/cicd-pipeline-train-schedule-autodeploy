@@ -6,6 +6,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE_NAME = "luswala/train-schedule"
+        PROD_DEPLOYMENT_CHOICE = "N"
     }
     stages {
         stage("Clone GIt"){
@@ -83,9 +84,9 @@ pipeline {
          //Code should be tested in the staging branch before deployment
          stage('Production Deployment Confirmation') {
             steps('Input') {
-                echo "Do you want to deploy code to the Production? (Y/N): ${CHOICE}"
-                echo "choice params.: " + params.CHOICE
-                echo "choice env: " + env.CHOICE
+                echo "Do you want to deploy code to the Production? (Y/N): ${PROD_DEPLOYMENT_CHOICE}"
+                echo "PROD_DEPLOYMENT_CHOICE params.: " + params.PROD_DEPLOYMENT_CHOICE
+                echo "PROD_DEPLOYMENT_CHOICE env: " + env.PROD_DEPLOYMENT_CHOICE
             }
         }
 
@@ -93,7 +94,7 @@ pipeline {
                          when {
                     anyOf {
                     branch 'master';
-                    expression{env.CHOICE == "YES"}
+                    expression{env.PROD_DEPLOYMENT_CHOICE == "YES"}
                     }
              }   
             environment { 
