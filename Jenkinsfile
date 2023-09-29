@@ -65,7 +65,7 @@ pipeline {
                  CANARY_REPLICAS = 1
              }
              steps {
-                sh "sed -i 's,\$DOCKER_IMAGE_NAME:\$BUILD_NUMBER,$DOCKER_IMAGE_NAME:$BUILD_NUMBER,' train-schedule-kube-canary.yml"
+                sh "sed -i 's,\$DOCKER_IMAGE_NAME:\$BUILD_NUMBER,$DOCKER_IMAGE_NAME:${env.BRANCH_NAME}_${env.BUILD_NUMBER},' train-schedule-kube-canary.yml"
                 sh "sed -i 's,\$CANARY_REPLICAS,$CANARY_REPLICAS,' train-schedule-kube-canary.yml"
                 sh "cat train-schedule-kube-canary.yml"
 
@@ -102,7 +102,7 @@ pipeline {
             }            
             steps {
 
-                 sh "sed -i 's,\$DOCKER_IMAGE_NAME:\$BUILD_NUMBER,$DOCKER_IMAGE_NAME:$BUILD_NUMBER,' train-schedule-kube.yml"
+                 sh "sed -i 's,\$DOCKER_IMAGE_NAME:\$BUILD_NUMBER,$DOCKER_IMAGE_NAME:${env.BRANCH_NAME}_${env.BUILD_NUMBER},' train-schedule-kube.yml"
                  sh "cat train-schedule-kube.yml"
                  sh "kubectl --kubeconfig=/var/lib/jenkins/.kube/config get pods"
                  sh 'kubectl --kubeconfig=/var/lib/jenkins/.kube/config  apply -f train-schedule-kube.yml'
