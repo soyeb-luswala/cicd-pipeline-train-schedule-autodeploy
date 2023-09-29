@@ -30,7 +30,9 @@ spec:
           periodSeconds: 10
         resources:
           requests:
-            cpu: 200m
+            cpu: 100m
+          limits:
+            cpu: 200m 
 
 ---
 kind: Service
@@ -46,3 +48,19 @@ spec:
   - protocol: TCP
     port: 8080
     nodePort: 30003 
+    
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: train-schedule-deployment-canary
+  labels:
+    app: train-schedule
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: train-schedule-deployment-canary
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 50
