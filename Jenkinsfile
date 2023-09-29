@@ -21,13 +21,14 @@ pipeline {
             }
         }
         stage('Build Docker Image') {
-            steps {
+
              when {
                     anyOf {
                     branch 'master';
                     branch 'staging'
                     }
              }                   
+            steps {
                 script {
                     app = docker.build(DOCKER_IMAGE_NAME)
                                         app.inside {
