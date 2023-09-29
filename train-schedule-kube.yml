@@ -31,6 +31,8 @@ spec:
         resources:
           requests:
             cpu: 200m
+          limits:
+            cpu: 400m 
 
 ---
 kind: Service
@@ -45,4 +47,22 @@ spec:
   - protocol: TCP
     port: 8080
     nodePort: 30002
+
+
+
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: train-schedule-deployment
+  labels:
+    app: train-schedule
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: train-schedule-deployment
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 50
 
