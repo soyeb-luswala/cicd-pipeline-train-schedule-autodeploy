@@ -81,24 +81,6 @@ pipeline {
 
              }
          }        
-         //Code should be tested in the staging branch before deployment
-         stage('Production Deployment Confirmation') {
-            steps('Input') {
-                
-                 def PROD_DEPLOYMENT_CHOICE = input(
-                            id: 'PROD_DEPLOYMENT_CHOICE', message: 'Do you want to deploy code to the Production?',
-                            parameters: [
-
-                                    string(defaultValue: 'No',
-                                            description: 'Deploy to Production',
-                                            name: 'Yes'),
-                                    string(defaultValue: 'No',
-                                            description: 'Skip Prod Deployment',
-                                            name: 'No'),
-                            ])
-
-            }
-        }
 
         stage('DeployToProduction') {
                          when {
