@@ -86,11 +86,24 @@ pipeline {
             steps('Input') {
                 echo "Do you want to deploy code to the Production? (Y/N): ${PROD_DEPLOYMENT_CHOICE}"
 
-                env.PROD_DEPLOYMENT_CHOICE = input message: 'User input required',
+                env.PROD_DEPLOYMENT_CHOICE: input message: 'User input required',
                  parameters: [choice(name: 'Do you want to deploy code to the Production?', choices: 'no\nyes', description: 'Choose "yes" if you want to deploy this build to Production')]
 
                 echo "PROD_DEPLOYMENT_CHOICE params.: " + params.PROD_DEPLOYMENT_CHOICE
                 echo "PROD_DEPLOYMENT_CHOICE env: " + env.PROD_DEPLOYMENT_CHOICE
+
+
+                 def PROD_DEPLOYMENT_CHOICE = input(
+                            id: 'PROD_DEPLOYMENT_CHOICE', message: 'Do you want to deploy code to the Production?',
+                            parameters: [
+
+                                    string(defaultValue: 'No',
+                                            description: 'Deploy to Prod',
+                                            name: 'Yes'),
+                                    string(defaultValue: 'No',
+                                            description: 'Skip Prod Deployment',
+                                            name: 'No'),
+                            ])
 
             }
         }
