@@ -48,7 +48,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-user') {
-                        app.push("${env.BUILD_NUMBER}")
+                        app.push("${env.BRANCH_NAME}_${env.BUILD_NUMBER}")
                         app.push("latest")
                     }
                 }
